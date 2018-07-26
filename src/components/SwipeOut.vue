@@ -76,6 +76,7 @@
 				this.leftOpen = false;
 				this.rightOpen = false;
 				this.startLeft = 0;
+				this.$emit('on-close');
 			},
 			revealLeft() {
 				if (this.isActive)
@@ -84,6 +85,7 @@
 				const oldLeft = this.$refs.content.getBoundingClientRect().left;
 				this.leftOpen = true;
 				this._animateSlide(this.leftActionsWidth, oldLeft);
+				this.$emit('on-left-open');
 			},
 			revealRight() {
 				if (this.isActive)
@@ -92,6 +94,7 @@
 				const oldLeft = this.$refs.content.getBoundingClientRect().left;
 				this.rightOpen = true;
 				this._animateSlide(-this.rightActionsWidth, oldLeft);
+				this.$emit('on-right-open');
 			},
 			clickReveal() {
 				if (!this.hasLeft && this.hasRight)
