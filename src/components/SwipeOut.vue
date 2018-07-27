@@ -71,7 +71,7 @@
 			closeActions() {
 				if (this.isActive)
 					return;
-
+				
 				this._animateSlide(0, this._distanceSwiped());
 				this.leftOpen = false;
 				this.rightOpen = false;
@@ -85,7 +85,6 @@
 				const oldLeft = this.$refs.content.getBoundingClientRect().left;
 				this.leftOpen = true;
 				this._animateSlide(this.leftActionsWidth, oldLeft);
-				this.$emit('on-left-open');
 			},
 			revealRight() {
 				if (this.isActive)
@@ -94,7 +93,6 @@
 				const oldLeft = this.$refs.content.getBoundingClientRect().left;
 				this.rightOpen = true;
 				this._animateSlide(-this.rightActionsWidth, oldLeft);
-				this.$emit('on-right-open');
 			},
 			clickReveal() {
 				if (!this.hasLeft && this.hasRight)
@@ -144,6 +142,8 @@
 				if (event.deltaY >= -5 && event.deltaY <= 5) {
 					this.startLeft = this._distanceSwiped();
 					this.isActive = true;
+
+					this.$emit('on-open');
 
 					if (event.deltaX > 0)
 						this.direction = 'ltr';
@@ -259,6 +259,14 @@
 					this.isTransitioning = true;
 				}
 
+				if (to === 0) {
+					if (!this.$refs.content.classList.contains('slide-animation')) {
+						this.$refs.content.classList.add('slide-animation');
+					}
+				} else if (this.$refs.content.classList.contains('slide-animation')) {
+					this.$refs.content.classList.remove('slide-animation');
+				}
+
 				window.requestAnimationFrame(() => {
 					this.$refs.content.style.transform = translateX(to);
 					this._shiftLeftActions(to, this.leftActionsWidth);
@@ -274,7 +282,7 @@
 			contentClick(e) {
 				this.$emit('swipeout:contentclick', e);
 			},
-		},
+		}
 	};
 </script>
 <style scoped>
@@ -292,7 +300,10 @@
   z-index: 1;
 }
 
-.swipeout.swipeout--transitioning .swipeout-content,
+.swipeout.swipeout--transitioning .swipeout-content.slide-animation {
+	transition: transform 300ms;
+}
+
 .swipeout.swipeout--transitioning .swipeout-action {
 	transition: transform 300ms;
 }
